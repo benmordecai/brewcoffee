@@ -167,7 +167,7 @@ const Header: React.FC<{ page: string; setPage: React.Dispatch<React.SetStateAct
 
 const Modal: React.FC<{ children: React.ReactNode; onClose: () => void }> = ({ children, onClose }) => {
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4" onClick={onClose}>
+        <div className="fixed inset-0 bg-gray-200 dark:bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 p-4" onClick={onClose}>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         {children}
         </div>
