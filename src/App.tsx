@@ -224,17 +224,17 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
         <form onSubmit={handleSubmit}>
         <h2 className="text-2xl font-heading text-gray-800 dark:text-gray-200 mb-4">{recipe ? 'Edit Recipe' : 'Add New Recipe'}</h2>
         
-        <div>
+        <div className="mb-4">
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Name</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         </div>
 
-        <div>
+        <div className="mb-4">
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Description</label>
         <textarea name="description" value={formData.description} onChange={handleChange} rows={2} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Ratio (1:X)</label>
         <select name="ratio" value={String(formData.ratio)} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200">
@@ -247,7 +247,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
         </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Grind</label>
         <select name="grind" value={formData.grind} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200">
@@ -265,7 +265,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
         </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Pours</label>
         <input type="number" name="pours" value={String(formData.pours)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, pours: parseInt(e.target.value, 10) || 0})} min="1" max="10" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
@@ -280,9 +280,9 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
         </div>
         </div>
 
-        <div>
+        <div className="mb-4">
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Comments</label>
-        <textarea name="comments" value={formData.comments} onChange={handleChange} rows={3} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
+        <textarea name="comments" value={formData.comments} onChange={handleChange} rows={6} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
         </div>
 
         <div className="flex justify-end space-x-3 pt-4">
