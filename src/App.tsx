@@ -221,7 +221,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit}>
         <h2 className="text-2xl font-heading text-gray-800 dark:text-gray-200 mb-4">{recipe ? 'Edit Recipe' : 'Add New Recipe'}</h2>
         
         <div>
