@@ -214,7 +214,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
 
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Description</label>
-        <textarea name="description" value={formData.description} onChange={handleChange} rows="2" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
+        <textarea name="description" value={formData.description} onChange={handleChange} rows={2} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -265,7 +265,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
 
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Comments</label>
-        <textarea name="comments" value={formData.comments} onChange={handleChange} rows="3" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
+        <textarea name="comments" value={formData.comments} onChange={handleChange} rows={3} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200"></textarea>
         </div>
 
         <div className="flex justify-end space-x-3 pt-4">
@@ -558,7 +558,7 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Grounds</label>
         <div className="flex items-center justify-center">
             <button onClick={() => handleGroundsChange(grounds - 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="number" value={grounds} onChange={handleGroundsChange} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
+            <input type="number" value={grounds} onChange={(e) => handleGroundsChange(parseInt(e.target.value, 10) || 0)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
             <button onClick={() => handleGroundsChange(grounds + 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
