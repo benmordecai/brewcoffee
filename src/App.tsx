@@ -83,9 +83,26 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<R
     return [storedValue, setValue];
 };
 
-const playNotificationSound = () => {
-    if ('vibrate' in navigator) {
-        navigator.vibrate(200);
+import { LocalNotifications } from '@capacitor/local-notifications';
+
+const playNotificationSound = async () => {
+    console.log("Attempting to schedule notification...");
+    try {
+        const result = await LocalNotifications.schedule({
+            notifications: [
+                {
+                    title: 'Timer Completed!',
+                    body: 'Your timer has finished.',
+                    id: 1, // Unique ID for this notification
+                    channelId: 'timer_completion',
+                    sound: 'default',
+                    
+                },
+            ],
+        });
+        console.log("Notification scheduled result:", result);
+    } catch (e) {
+        console.error("Error scheduling notification:", e);
     }
 };
 
@@ -457,8 +474,11 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
                 setTimer(t => t - 1);
             }, 1000);
         } else if (isTimerRunning && timer === 0) {
+            console.log("Timer reached zero, attempting to trigger notification.");
             setIsTimerRunning(false);
-            playNotificationSound();
+            (async () => {
+                await playNotificationSound();
+            })();
         }
         return () => {
             if (interval) {
