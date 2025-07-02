@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BrewCoffee</string>
+    <string name="title_activity_main">BrewCoffee</string>
+    <string name="package_name">com.mordecode.vibe.brewcoffee</string>
+    <string name="custom_url_scheme">com.mordecode.vibe.brewcoffee</string>
+</resources>

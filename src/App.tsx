@@ -453,7 +453,7 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
     React.useEffect(() => {
         let interval: number | null = null;
         if (isTimerRunning && timer > 0) {
-            interval = setInterval(() => {
+            interval = window.setInterval(() => {
                 setTimer(t => t - 1);
             }, 1000);
         } else if (isTimerRunning && timer === 0) {
