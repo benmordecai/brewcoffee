@@ -5,6 +5,7 @@ import { initialRecipes, grindOptions } from './data';
 import { playNotificationSound } from './notifications';
 import { Icon } from './Icon';
 
+
 interface RecipeFormData {
     id: string;
     name: string;
@@ -33,7 +34,7 @@ interface Recipe {
 
 const Header: React.FC<{ page: string; setPage: React.Dispatch<React.SetStateAction<string>> }> = ({ page, setPage }) => {
     return (
-        <header className="bg-white dark:bg-gray-800 p-4 flex justify-between items-center shadow-md sticky top-0 z-20">
+        <header className="bg-white dark:bg-gray-800 p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <h1 className="text-2xl font-heading font-bold text-gray-800 dark:text-gray-200 flex items-center">
         BrewCoffee
         </h1>

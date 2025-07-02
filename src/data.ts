@@ -21,7 +21,7 @@ export const initialRecipes = [
         waterTemperature: { value: 210, unit: 'F' },
         pours: 1,
         timeBetweenPours: { minutes: 10, seconds: 0 },
-        comments: 'Remove the plunger and add grounds. Then add pour the entire amount of water. Apply the plunger just enough to submerge the grounds below the surface. Let steep for the full timer. Then plunge the grounds to the bottom of the press. Pour finished coffee into a mug.',
+        comments: 'Remove the plunger and add grounds. Start the timer and pour the entire amount of water right away. Apply the plunger just enough to submerge the grounds below the surface. Let steep for the full timer. Then plunge the grounds to the bottom of the press. Pour finished coffee into a mug.',
     },
 ];
 
