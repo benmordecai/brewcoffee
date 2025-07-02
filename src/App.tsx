@@ -574,14 +574,16 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
         </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
+        
+
+        <div className="w-full mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Ratio</label>
         <select value={ratio} onChange={handleRatioChange} className="block mx-auto bg-transparent text-gray-800 dark:text-gray-200 text-4xl font-bold focus:outline-none appearance-none text-center">
         {Array.from({length: 11}, (_, i) => i + 10).map(n => <option key={n} value={n}>1:{n}</option>)}
         </select>
         </div>
 
+        <div className="w-full mb-4">
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <p className="text-gray-500 dark:text-gray-400 text-lg">Pour: <span className="font-bold text-gray-800 dark:text-gray-200">{currentPour}</span> / {recipe.pours}</p>
         <p className="text-gray-800 dark:text-gray-200 text-xl font-bold mt-1">{Math.round(pourStart)}g - {Math.round(pourEnd)}g</p>
