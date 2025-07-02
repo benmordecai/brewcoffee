@@ -597,14 +597,14 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
         
 
         <div className="grid grid-cols-2 gap-4">
-        <div className="w-full mb-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
+        <div className="w-full bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Ratio</label>
         <select value={ratio} onChange={handleRatioChange} className="block mx-auto bg-transparent text-gray-800 dark:text-gray-200 text-4xl font-bold focus:outline-none appearance-none text-center">
         {Array.from({length: 11}, (_, i) => i + 10).map(n => <option key={n} value={n}>1:{n}</option>)}
         </select>
         </div>
 
-        <div className="w-full mb-4">
+        <div className="w-full">
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <p className="text-gray-500 dark:text-gray-400 text-lg">Pour: <span className="font-bold text-gray-800 dark:text-gray-200">{currentPour}</span> / {recipe.pours}</p>
         <p className="text-gray-800 dark:text-gray-200 text-xl font-bold mt-1">{Math.round(pourStart)}g - {Math.round(pourEnd)}g</p>
@@ -631,7 +631,7 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
         <p className="text-gray-500 dark:text-gray-400 mt-2">Time Between Pours</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-2 gap-4">
         <button onClick={handleReset} className="p-4 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold text-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Reset</button>
         <button onClick={handleStartStop} className="p-4 rounded-lg bg-blue-600 text-white font-bold text-lg shadow-sm hover:bg-blue-700 transition-opacity">
         {getButtonText()}
