@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Roboto:wght@400;500&display=swap');
+
+    .font-heading {
+        font-family: 'Quicksand', sans-serif;
+    }
+    .font-body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Remove number input spinners */
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+

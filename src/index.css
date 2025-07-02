@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Roboto:wght@400;500&display=swap');
+
+@source "./index.html";
+@source "./src/**/*.tsx";
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-family-heading: 'Quicksand', sans-serif;
+    --font-family-body: 'Roboto', sans-serif;
+}
+
+/* Hide spin buttons for number input */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
