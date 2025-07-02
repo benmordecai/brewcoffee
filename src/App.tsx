@@ -1,4 +1,9 @@
 import React from 'react';
+import { MainPage } from './MainPage';
+import { useLocalStorage } from './hooks';
+import { initialRecipes, grindOptions } from './data';
+import { playNotificationSound } from './notifications';
+import { Icon } from './Icon';
 
 interface RecipeFormData {
     id: string;
@@ -25,128 +30,6 @@ interface Recipe {
     timeBetweenPours: { minutes: number; seconds: number; };
     comments: string;
 }
-
-const initialRecipes: Recipe[] = [
-    {
-        id: 'default-1',
-        name: 'Pour Over',
-        description: 'A perfect small cup, designed for conical brewers like the Hario V60.',
-        ratio: 15,
-        suggestedGrounds: 15,
-        grind: 'Medium',
-        waterTemperature: { value: 212, unit: 'F' },
-        pours: 3,
-        timeBetweenPours: { minutes: 0, seconds: 35 },
-        comments: 'Fold the bottom of the filter to reinforce the seal, and pre-wet the filter and mug with hot water. Place mug, brewer and moistened filter with grounds on a kitchen scale and tare to zero. Start the timer and begin the pour. Pour slowly, but it is not necessary to take the entire time. Begin the next pour when the timer has elapsed.',
-    },
-    {
-        id: 'default-2',
-        name: 'French Press',
-        description: 'Hearty and silty brew for a long session. Perfect for sharing.',
-        ratio: 16,
-        suggestedGrounds: 60,
-        grind: 'Coarse',
-        waterTemperature: { value: 210, unit: 'F' },
-        pours: 1,
-        timeBetweenPours: { minutes: 10, seconds: 0 },
-        comments: 'Remove the plunger and add grounds. Then add pour the entire amount of water. Apply the plunger just enough to submerge the grounds below the surface. Let steep for the full timer. Then plunge the grounds to the bottom of the press. Pour finished coffee into a mug.',
-    },
-];
-
-const grindOptions = ['Extra Coarse', 'Coarse', 'Medium-Coarse', 'Medium', 'Medium-Fine', 'Fine', 'Very Fine'];
-
-const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
-    const [storedValue, setStoredValue] = React.useState<T>(() => {
-        try {
-            const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
-        } catch (error) {
-            console.error(error);
-            return initialValue;
-        }
-    });
-
-    const setValue: React.Dispatch<React.SetStateAction<T>> = (value) => {
-        try {
-            const valueToStore = value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            if (valueToStore === 'system') {
-                window.localStorage.removeItem(key);
-            } else {
-                window.localStorage.setItem(key, JSON.stringify(valueToStore));
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    return [storedValue, setValue];
-};
-
-import { LocalNotifications } from '@capacitor/local-notifications';
-
-const playNotificationSound = async () => {
-    console.log("Attempting to schedule notification...");
-    try {
-        const result = await LocalNotifications.schedule({
-            notifications: [
-                {
-                    title: 'Timer Completed!',
-                    body: 'Your timer has finished.',
-                    id: 1, // Unique ID for this notification
-                    channelId: 'timer_completion',
-                    sound: 'default',
-                    
-                },
-            ],
-        });
-        console.log("Notification scheduled result:", result);
-    } catch (e) {
-        console.error("Error scheduling notification:", e);
-    }
-};
-
-const Icon: React.FC<{ name: string; className: string }> = ({ name, className }) => {
-    const icons: { [key: string]: React.ReactElement } = {
-        gear: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.438.995s.145.755.438.995l1.003.827c.48.398.668 1.03.26 1.431l-1.296 2.247a1.125 1.125 0 01-1.37.49l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.127c-.331.183-.581.495-.644.87l-.213 1.281c-.09.543-.56.94-1.11.94h-2.593c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.063-.374-.313-.686-.645-.87a6.52 6.52 0 01-.22-.127c-.324-.196-.72-.257-1.075-.124l-1.217.456a1.125 1.125 0 01-1.37-.49l-1.296-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.437-.995s-.145-.755-.437-.995l-1.004-.827a1.125 1.125 0 01-.26-1.431l1.296-2.247a1.125 1.125 0 011.37-.49l1.217.456c.355.133.75.072 1.076-.124.072-.044.146-.087.22-.127.331-.183.581-.495.644-.87l.213-1.281z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-        ),
-        home: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h7.5" />
-            </svg>
-        ),
-        plus: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-        ),
-        trash: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.067-2.09 1.02-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-            </svg>
-        ),
-        edit: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-            </svg>
-        ),
-        chevronUp: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-            </svg>
-        ),
-        chevronDown: (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-            </svg>
-        )
-    };
-    return icons[name] || null;
-};
 
 const Header: React.FC<{ page: string; setPage: React.Dispatch<React.SetStateAction<string>> }> = ({ page, setPage }) => {
     return (
@@ -418,23 +301,22 @@ const SettingsPage: React.FC<{
     );
 };
 
+function App() {
+    const [page, setPage] = React.useState<string>('main');
+    const [recipes, setRecipes] = useLocalStorage<Recipe[]>('brewcoffee-recipes', initialRecipes);
+    const [theme, setTheme] = useLocalStorage<string>('brewcoffee-theme', 'system');
+    const [tempUnit, setTempUnit] = useLocalStorage<string>('brewcoffee-temp-unit', 'F');
 
-const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, tempUnit }) => {
-    
+    // Lifted State
     const [selectedRecipeId, setSelectedRecipeId] = React.useState(recipes[0].id);
     const recipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
-
     const [grounds, setGrounds] = React.useState(recipe.suggestedGrounds);
     const [water, setWater] = React.useState(recipe.suggestedGrounds * recipe.ratio);
     const [ratio, setRatio] = React.useState(recipe.ratio);
-
-    
-
     const [totalSeconds, setTotalSeconds] = React.useState(recipe.timeBetweenPours.minutes * 60 + recipe.timeBetweenPours.seconds);
     const [timer, setTimer] = React.useState(totalSeconds);
     const [isTimerRunning, setIsTimerRunning] = React.useState(false);
     const [isEditingTime, setIsEditingTime] = React.useState(false);
-
     const [currentPour, setCurrentPour] = React.useState(1);
     const [isBrewing, setIsBrewing] = React.useState(false);
 
@@ -451,22 +333,12 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
         setIsBrewing(false);
     }, [selectedRecipeId, recipes]);
 
-    const handleGroundsChange = (newGrounds: number) => {
-        setGrounds(newGrounds);
-        setWater(Math.round(newGrounds * ratio));
-    };
+    React.useEffect(() => {
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', isDark);
+    }, [theme]);
 
-    const handleWaterChange = (newWater: number) => {
-        setWater(newWater);
-        setGrounds(Number((newWater / ratio).toFixed(1)));
-    };
-
-    const handleRatioChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newRatio = Number(e.target.value);
-        setRatio(newRatio);
-        setWater(Math.round(grounds * newRatio));
-    };
-
+    // Lifted Timer Logic
     React.useEffect(() => {
         let interval: number | null = null;
         if (isTimerRunning && timer > 0) {
@@ -487,228 +359,6 @@ const MainPage: React.FC<{ recipes: Recipe[]; tempUnit: string }> = ({ recipes, 
         };
     }, [isTimerRunning, timer]);
 
-    const handleStartStop = () => {
-        if (!isBrewing) {
-            setIsBrewing(true);
-            setIsTimerRunning(true);
-            return;
-        }
-
-        if (isTimerRunning) {
-            setIsTimerRunning(false);
-        } else {
-            if (timer > 0) {
-                setIsTimerRunning(true);
-            } else {
-                if (currentPour < recipe.pours) {
-                    setCurrentPour(p => p + 1);
-                    setTimer(totalSeconds);
-                    setIsTimerRunning(true);
-                } else {
-                    handleReset();
-                }
-            }
-        }
-    };
-
-    const handleReset = () => {
-        const currentRecipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
-        setGrounds(currentRecipe.suggestedGrounds);
-        setWater(currentRecipe.suggestedGrounds * currentRecipe.ratio);
-        setRatio(currentRecipe.ratio);
-        const newTotalSeconds = currentRecipe.timeBetweenPours.minutes * 60 + currentRecipe.timeBetweenPours.seconds;
-        setTotalSeconds(newTotalSeconds);
-        setTimer(newTotalSeconds);
-        setCurrentPour(1);
-        setIsTimerRunning(false);
-        setIsBrewing(false);
-        setIsEditingTime(false);
-    };
-
-    const handleTimeEditSave = (newMinutes: number, newSeconds: number) => {
-        const newTotal = (newMinutes * 60) + newSeconds;
-        setTotalSeconds(newTotal);
-        setTimer(newTotal);
-        setIsEditingTime(false);
-    };
-
-    const formatTime = (s: number) => {
-        const minutes = Math.floor(s / 60);
-        const seconds = s % 60;
-        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    };
-
-    const waterPerPour = water / recipe.pours;
-    const pourStart = (currentPour - 1) * waterPerPour;
-    const pourEnd = currentPour * waterPerPour;
-
-    const getButtonText = () => {
-        if (!isBrewing) return 'Start';
-        if (isTimerRunning) return 'Pause';
-        if (timer === 0) {
-            return currentPour < recipe.pours ? 'Continue' : 'Finish';
-        }
-        return 'Resume';
-    };
-
-    const convertTemp = (temp: { value: number; unit: string }) => {
-        if (temp.unit === tempUnit) return temp.value;
-        if (tempUnit === 'C') {
-            return Math.round((temp.value - 32) * 5/9);
-        } else {
-            return Math.round(temp.value * 9/5 + 32);
-        }
-    };
-
-    return (
-        <div className="p-4 md:p-6 space-y-4">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-        <select
-        value={selectedRecipeId}
-        onChange={e => setSelectedRecipeId(e.target.value)}
-        className="w-full bg-gray-100 dark:bg-gray-700 p-3 rounded-md border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 font-heading text-lg focus:ring-blue-500 focus:border-blue-500"
-        >
-        {recipes.map((r: Recipe) => <option key={r.id} value={r.id}>{r.name}</option>)}
-        </select>
-        <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm">{recipe.description}</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-        <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Grounds</label>
-        <div className="flex items-center justify-center">
-            <button onClick={() => handleGroundsChange(grounds - 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="number" value={grounds} onChange={(e) => handleGroundsChange(parseInt(e.target.value, 10) || 0)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
-            <button onClick={() => handleGroundsChange(grounds + 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
-        </div>
-        <span className="text-gray-500 dark:text-gray-400">grams</span>
-        </div>
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-        <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Water</label>
-        <div className="flex items-center justify-center">
-            <button onClick={() => handleWaterChange(water - 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="number" value={water} onChange={(e) => handleWaterChange(Number(e.target.value))} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
-            <button onClick={() => handleWaterChange(water + 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
-        </div>
-        <span className="text-gray-500 dark:text-gray-400">grams</span>
-        </div>
-        </div>
-
-        
-
-        <div className="grid grid-cols-2 gap-4">
-        <div className="w-full bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-        <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Ratio</label>
-        <select value={ratio} onChange={handleRatioChange} className="block mx-auto bg-transparent text-gray-800 dark:text-gray-200 text-4xl font-bold focus:outline-none appearance-none text-center">
-        {Array.from({length: 11}, (_, i) => i + 10).map(n => <option key={n} value={n}>1:{n}</option>)}
-        </select>
-        </div>
-
-        <div className="w-full">
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-        <p className="text-gray-500 dark:text-gray-400 text-lg">Pour: <span className="font-bold text-gray-800 dark:text-gray-200">{currentPour}</span> / {recipe.pours}</p>
-        <p className="text-gray-800 dark:text-gray-200 text-xl font-bold mt-1">{Math.round(pourStart)}g - {Math.round(pourEnd)}g</p>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Target Water Range</p>
-        </div>
-        </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-        <div className="flex justify-center items-center">
-        {isEditingTime ? (
-            <TimeEditForm initialTime={totalSeconds} onSave={handleTimeEditSave} onCancel={() => setIsEditingTime(false)} />
-        ) : (
-            <>
-            <h3 className="text-7xl font-mono font-bold text-gray-800 dark:text-gray-200 tracking-wider">{formatTime(timer)}</h3>
-            {!isBrewing &&
-                <button onClick={() => setIsEditingTime(true)} className="ml-4 p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
-                <Icon name="edit" className="w-6 h-6" />
-                </button>
-            }
-            </>
-        )}
-        </div>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Time Between Pours</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-        <button onClick={handleReset} className="p-4 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold text-lg shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Reset</button>
-        <button onClick={handleStartStop} className="p-4 rounded-lg bg-blue-600 text-white font-bold text-lg shadow-sm hover:bg-blue-700 transition-opacity">
-        {getButtonText()}
-        </button>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm space-y-3">
-        <div className="grid grid-cols-3 gap-2 text-center">
-        <div>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Grind</p>
-        <p className="text-gray-800 dark:text-gray-200 font-semibold">{recipe.grind}</p>
-        </div>
-        <div>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Water Temp</p>
-        <p className="text-gray-800 dark:text-gray-200 font-semibold">{convertTemp(recipe.waterTemperature)}°{tempUnit}</p>
-        </div>
-        <div>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Pours</p>
-        <p className="text-gray-800 dark:text-gray-200 font-semibold">{recipe.pours}</p>
-        </div>
-        </div>
-        {recipe.comments && (
-            <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Comments</h4>
-            <p className="text-gray-500 dark:text-gray-400 text-sm">{recipe.comments}</p>
-            </div>
-        )}
-        </div>
-
-        </div>
-    );
-};
-
-const TimeEditForm: React.FC<{ initialTime: number; onSave: (minutes: number, seconds: number) => void; onCancel: () => void }> = ({ initialTime, onSave, onCancel }) => {
-    const [minutes, setMinutes] = React.useState(Math.floor(initialTime / 60));
-    const [seconds, setSeconds] = React.useState(initialTime % 60);
-
-    const handleSave = () => {
-        onSave(minutes, seconds);
-    };
-
-    const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let val = parseInt(e.target.value, 10) || 0;
-        if (val < 0) val = 0;
-        setMinutes(val);
-    }
-
-    const handleSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let val = parseInt(e.target.value, 10) || 0;
-        if (val < 0) val = 0;
-        if (val > 59) val = 59;
-        setSeconds(val);
-    }
-
-    return (
-        <div className="flex items-center space-x-1">
-        <input type="number" value={minutes} onChange={handleMinutesChange} className="w-24 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-3xl font-mono font-bold focus:outline-none rounded-md p-2" />
-        <span className="text-3xl font-mono font-bold text-gray-800 dark:text-gray-200">:</span>
-        <input type="number" value={seconds} onChange={handleSecondsChange} className="w-24 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-3xl font-mono font-bold focus:outline-none rounded-md p-2" />
-        <button onClick={handleSave} className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md">Save</button>
-        <button onClick={onCancel} className="px-3 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md">Cancel</button>
-        </div>
-    );
-};
-
-
-function App() {
-    const [page, setPage] = React.useState<string>('main');
-    const [recipes, setRecipes] = useLocalStorage<Recipe[]>('brewcoffee-recipes', initialRecipes);
-    const [theme, setTheme] = useLocalStorage<string>('brewcoffee-theme', 'system');
-    const [tempUnit, setTempUnit] = useLocalStorage<string>('brewcoffee-temp-unit', 'F');
-
-    React.useEffect(() => {
-        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', isDark);
-    }, [theme]);
-
     if (!recipes || recipes.length === 0) {
         setRecipes(initialRecipes);
     }
@@ -718,7 +368,30 @@ function App() {
         <Header page={page} setPage={setPage} />
         <main className="max-w-3xl mx-auto pb-16">
         {page === 'main' ? (
-            <MainPage recipes={recipes} tempUnit={tempUnit} />
+            <MainPage 
+                recipes={recipes}
+                tempUnit={tempUnit}
+                selectedRecipeId={selectedRecipeId}
+                setSelectedRecipeId={setSelectedRecipeId}
+                grounds={grounds}
+                setGrounds={setGrounds}
+                water={water}
+                setWater={setWater}
+                ratio={ratio}
+                setRatio={setRatio}
+                totalSeconds={totalSeconds}
+                setTotalSeconds={setTotalSeconds}
+                timer={timer}
+                setTimer={setTimer}
+                isTimerRunning={isTimerRunning}
+                setIsTimerRunning={setIsTimerRunning}
+                isEditingTime={isEditingTime}
+                setIsEditingTime={setIsEditingTime}
+                currentPour={currentPour}
+                setCurrentPour={setCurrentPour}
+                isBrewing={isBrewing}
+                setIsBrewing={setIsBrewing}
+            />
         ) : (
             <SettingsPage
             recipes={recipes}
