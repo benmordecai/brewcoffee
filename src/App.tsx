@@ -10,11 +10,11 @@ interface RecipeFormData {
     id: string;
     name: string;
     description: string;
-    ratio: number;
-    suggestedGrounds: number;
+    ratio: string;
+    suggestedGrounds: string;
     grind: string;
-    waterTemperature: { value: number; unit: string; };
-    pours: number;
+    waterTemperature: { value: string; unit: string; };
+    pours: string;
     timeBetweenPours: string; // mm:ss format
     comments: string;
 }
@@ -46,6 +46,23 @@ function parseTimeInput(input: string): { minutes: number; seconds: number } {
     throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
   }
   return { minutes, seconds };
+}
+
+function validateNumeric(value: string, fieldName: string, options: { isInteger?: boolean, min?: number, max?: number } = {}): number {
+    const num = Number(value);
+    if (isNaN(num)) {
+        throw new Error(`${fieldName} must be a number.`);
+    }
+    if (options.isInteger && !Number.isInteger(num)) {
+        throw new Error(`${fieldName} must be a whole number.`);
+    }
+    if (options.min !== undefined && num < options.min) {
+        throw new Error(`${fieldName} must be at least ${options.min}.`);
+    }
+    if (options.max !== undefined && num > options.max) {
+        throw new Error(`${fieldName} must be no more than ${options.max}.`);
+    }
+    return num;
 }
 
 const formatTime = (minutes: number, seconds: number): string => {
@@ -84,6 +101,10 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         if (recipe) {
             return {
                 ...recipe,
+                ratio: String(recipe.ratio),
+                suggestedGrounds: String(recipe.suggestedGrounds),
+                pours: String(recipe.pours),
+                waterTemperature: { ...recipe.waterTemperature, value: String(recipe.waterTemperature.value) },
                 timeBetweenPours: formatTime(recipe.timeBetweenPours.minutes, recipe.timeBetweenPours.seconds),
             };
         }
@@ -91,16 +112,16 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
             id: `recipe_${Date.now()}`,
             name: '',
             description: '',
-            ratio: 15,
-            suggestedGrounds: 20,
+            ratio: '15',
+            suggestedGrounds: '20',
             grind: 'Medium',
-            waterTemperature: { value: 212, unit: 'F' },
-            pours: 3,
+            waterTemperature: { value: '212', unit: 'F' },
+            pours: '3',
             timeBetweenPours: '00:30',
             comments: '',
         };
     });
-    const [timeError, setTimeError] = React.useState<string | null>(null);
+    const [errors, setErrors] = React.useState<Record<string, string>>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -119,12 +140,26 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const newErrors: Record<string, string> = {};
         try {
             const time = parseTimeInput(formData.timeBetweenPours);
-            onSave({ ...formData, timeBetweenPours: time });
-            setTimeError(null);
+            const ratio = validateNumeric(formData.ratio, 'Ratio');
+            const suggestedGrounds = validateNumeric(formData.suggestedGrounds, 'Suggested Grounds');
+            const pours = validateNumeric(formData.pours, 'Pours', { isInteger: true, min: 1, max: 10 });
+            const waterTemperatureValue = validateNumeric(formData.waterTemperature.value, 'Water Temperature');
+
+            const numericData: Recipe = {
+                ...formData,
+                ratio,
+                suggestedGrounds,
+                pours,
+                waterTemperature: { ...formData.waterTemperature, value: waterTemperatureValue },
+                timeBetweenPours: time,
+            };
+            onSave(numericData);
         } catch (err: any) {
-            setTimeError(err.message);
+            newErrors.form = err.message;
+            setErrors(newErrors);
         }
     };
 
@@ -132,6 +167,8 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         <form onSubmit={handleSubmit}>
         <h2 className="text-2xl font-heading text-gray-800 dark:text-gray-200 mb-4">{recipe ? 'Edit Recipe' : 'Add New Recipe'}</h2>
         
+        {errors.form && <p className="text-red-500 text-sm mb-4">{errors.form}</p>}
+
         <div className="mb-4">
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Name</label>
         <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
@@ -145,13 +182,13 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Ratio (1:X)</label>
-        <select name="ratio" value={String(formData.ratio)} onChange={e => setFormData({...formData, ratio: Number(e.target.value)})} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200">
-        {Array.from({length: 11}, (_, i) => i + 10).map(n => <option key={n} value={n}>1:{n}</option>)}
+        <select name="ratio" value={formData.ratio} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200">
+        {Array.from({length: 11}, (_, i) => i + 10).map(n => <option key={n} value={String(n)}>1:{n}</option>)}
         </select>
         </div>
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Suggested Grounds (g)</label>
-        <input type="number" name="suggestedGrounds" value={String(formData.suggestedGrounds)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, suggestedGrounds: parseInt(e.target.value, 10) || 0})} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        <input type="text" name="suggestedGrounds" value={formData.suggestedGrounds} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         </div>
         </div>
 
@@ -165,7 +202,7 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Water Temp</label>
         <div className="flex">
-        <input type="number" value={String(formData.waterTemperature.value)} onChange={(e) => handleNestedChange('waterTemperature', 'value', parseInt(e.target.value, 10) || 0)} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-l-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        <input type="text" value={formData.waterTemperature.value} onChange={(e) => handleNestedChange('waterTemperature', 'value', e.target.value)} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-l-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-sm">
         {formData.waterTemperature.unit}
         </span>
@@ -176,12 +213,11 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Pours</label>
-        <input type="number" name="pours" value={String(formData.pours)} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, pours: parseInt(e.target.value, 10) || 0})} min="1" max="10" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        <input type="text" name="pours" value={formData.pours} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         </div>
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Time Between Pours</label>
         <input type="text" name="timeBetweenPours" value={formData.timeBetweenPours} onChange={handleChange} placeholder="mm:ss" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
-        {timeError && <p className="text-red-500 text-xs mt-1">{timeError}</p>}
         </div>
         </div>
 
