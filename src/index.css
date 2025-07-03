@@ -8,8 +8,56 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-family-heading: 'Quicksand', sans-serif;
-    --font-family-body: 'Roboto', sans-serif;
+  --font-family-heading: 'Quicksand', sans-serif;
+  --font-family-body: 'Roboto', sans-serif;
+
+  /*
+   * Coffee Theme (Light Mode)
+   * To revert, comment out the theme below.
+   */
+
+  /*
+  --color-white: #FFFFFF;
+  --color-gray-100: #F5F5DC;
+  --color-gray-200: #EFEBE3;
+  --color-gray-300: #E8E0D1;
+  --color-gray-800: #442d22;
+  */
+
+  /* Dark Roast Theme */
+  --color-gray-400: #9c7b6b;  /* toasted cream (~66%) */
+  --color-gray-700: #4a3328;  /* mocha bark (~32%) */
+  --color-gray-800: #301e17;  /* dark roast (~20%) */
+  --color-gray-900: #1c110c;  /* espresso black (~12%) */
+  --color-blue-600: #6e4b3b;  /* spicy mocha (~46%) */
+  --color-blue-700: #5c3a2e;  /* bold syrup (~38%) */
+
+
+  /*
+   * Coffee with Orange Accent Theme (Dark Mode)
+   */
+
+  /*
+  --color-gray-200: #F5F5DC;
+  --color-gray-400: #D3D3D3;
+  --color-gray-700: #442d22;
+  --color-gray-800: #211717;
+  --color-gray-900: #110c0c;
+  --color-blue-600: #E67E22;
+  --color-blue-700: #D35400;
+  */
+
+
+
+  /*
+   * Default Tailwind Theme (Dark Mode)
+   * --color-gray-400: #9ca3af;
+   * --color-gray-700: #374151;
+   * --color-gray-800: #1f2937;
+   * --color-gray-900: #111827;
+   * --color-blue-600: #2563eb;
+   * --color-blue-700: #1d4ed8;
+   */
 }
 
 /* Hide spin buttons for number input */

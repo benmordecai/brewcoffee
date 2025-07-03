@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Roboto:wght@400;500&display=swap');
+
+@source "./index.html";
+@source "./src/**/*.tsx";
+
+@import "tailwindcss";
+
+/* Use a class-based dark mode strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-family-heading: 'Quicksand', sans-serif;
+  --font-family-body: 'Roboto', sans-serif;
+
+  /* Semantic Colors - Light Mode (default) */
+  --color-background: #F5F5DC;
+  --color-card: #FFFFFF;
+  --color-interactive: #EFEBE3;
+  --color-border: #E8E0D1;
+  --color-textprimary: #442d22;
+  --color-textsecondary: #6B4F4B;
+  --color-accent: #E67E22;
+  --color-accentdarker: #D35400;
+
+  /* Dark Mode overrides for semantic colors */
+  @dark {
+    --color-background: #110c0c;
+    --color-card: #211717;
+    --color-interactive: #442d22;
+    --color-border: #5a3f37;
+    --color-textprimary: #F5F5DC;
+    --color-textsecondary: #D3D3D3;
+    --color-accent: #E67E22;
+    --color-accentdarker: #D35400;
+  }
+}
+
+/* Hide spin buttons for number input */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
