@@ -15,7 +15,7 @@ interface RecipeFormData {
     grind: string;
     waterTemperature: { value: number; unit: string; };
     pours: number;
-    timeBetweenPours: { minutes: number; seconds: number; };
+    timeBetweenPours: string; // mm:ss format
     comments: string;
 }
 
@@ -31,6 +31,26 @@ interface Recipe {
     timeBetweenPours: { minutes: number; seconds: number; };
     comments: string;
 }
+
+function parseTimeInput(input: string): { minutes: number; seconds: number } {
+  const [minStr, secStr] = input.split(":");
+  const minutes = parseInt(minStr, 10);
+  const seconds = parseInt(secStr, 10);
+  if (
+    isNaN(minutes) ||
+    isNaN(seconds) ||
+    minutes < 0 ||
+    seconds < 0 ||
+    seconds > 59
+  ) {
+    throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
+  }
+  return { minutes, seconds };
+}
+
+const formatTime = (minutes: number, seconds: number): string => {
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
 
 const Header: React.FC<{ page: string; setPage: React.Dispatch<React.SetStateAction<string>> }> = ({ page, setPage }) => {
     return (
@@ -59,9 +79,15 @@ const Modal: React.FC<{ children: React.ReactNode; onClose: () => void }> = ({ c
     );
 };
 
-const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: RecipeFormData) => void; onCancel: () => void }> = ({ recipe, onSave, onCancel }) => {
-    const [formData, setFormData] = React.useState<RecipeFormData>(
-        recipe || {
+const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => void; onCancel: () => void }> = ({ recipe, onSave, onCancel }) => {
+    const [formData, setFormData] = React.useState<RecipeFormData>(() => {
+        if (recipe) {
+            return {
+                ...recipe,
+                timeBetweenPours: formatTime(recipe.timeBetweenPours.minutes, recipe.timeBetweenPours.seconds),
+            };
+        }
+        return {
             id: `recipe_${Date.now()}`,
             name: '',
             description: '',
@@ -70,35 +96,36 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
             grind: 'Medium',
             waterTemperature: { value: 212, unit: 'F' },
             pours: 3,
-            timeBetweenPours: { minutes: 0, seconds: 30 },
+            timeBetweenPours: '00:30',
             comments: '',
-        }
-    );
+        };
+    });
+    const [timeError, setTimeError] = React.useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleNestedChange = (parent: keyof RecipeFormData, child: string, value: number) => {
+    const handleNestedChange = (parent: keyof RecipeFormData, child: string, value: any) => {
         setFormData(prev => ({
             ...prev,
             [parent]: {
-                ...(prev[parent] as Record<string, number | string>),
+                ...(prev[parent] as Record<string, any>),
                 [child]: value,
             },
         }));
     };
 
-    
-
-    const handleTimeChange = (part: keyof RecipeFormData['timeBetweenPours'], value: string) => {
-        handleNestedChange('timeBetweenPours', part, parseInt(value, 10) || 0);
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave(formData);
+        try {
+            const time = parseTimeInput(formData.timeBetweenPours);
+            onSave({ ...formData, timeBetweenPours: time });
+            setTimeError(null);
+        } catch (err: any) {
+            setTimeError(err.message);
+        }
     };
 
     return (
@@ -118,7 +145,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
         <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Ratio (1:X)</label>
-        <select name="ratio" value={String(formData.ratio)} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200">
+        <select name="ratio" value={String(formData.ratio)} onChange={e => setFormData({...formData, ratio: Number(e.target.value)})} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200">
         {Array.from({length: 11}, (_, i) => i + 10).map(n => <option key={n} value={n}>1:{n}</option>)}
         </select>
         </div>
@@ -153,11 +180,8 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
         </div>
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Time Between Pours</label>
-        <div className="flex items-center space-x-2">
-        <input type="number" value={String(formData.timeBetweenPours.minutes)} onChange={(e) => handleTimeChange('minutes', e.target.value)} min="0" max="59" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
-        <span className="text-gray-500 dark:text-gray-400">:</span>
-        <input type="number" value={String(formData.timeBetweenPours.seconds).padStart(2, '0')} onChange={(e) => handleTimeChange('seconds', e.target.value)} min="0" max="59" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
-        </div>
+        <input type="text" name="timeBetweenPours" value={formData.timeBetweenPours} onChange={handleChange} placeholder="mm:ss" className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        {timeError && <p className="text-red-500 text-xs mt-1">{timeError}</p>}
         </div>
         </div>
 
@@ -183,7 +207,7 @@ const SettingsPage: React.FC<{
     setTempUnit: React.Dispatch<React.SetStateAction<string>>;
 }> = ({ recipes, setRecipes, theme, setTheme, tempUnit, setTempUnit }) => {
     const [isFormVisible, setIsFormVisible] = React.useState(false);
-    const [editingRecipe, setEditingRecipe] = React.useState<RecipeFormData | null>(null);
+    const [editingRecipe, setEditingRecipe] = React.useState<Recipe | null>(null);
 
     const handleAddRecipe = () => {
         setEditingRecipe(null);
@@ -205,7 +229,7 @@ const SettingsPage: React.FC<{
         }
     };
 
-    const handleSaveRecipe = (recipeData: RecipeFormData) => {
+    const handleSaveRecipe = (recipeData: Recipe) => {
         const exists = recipes.some((r: Recipe) => r.id === recipeData.id);
         if (exists) {
             setRecipes(recipes.map((r: Recipe) => (r.id === recipeData.id ? recipeData : r)));
