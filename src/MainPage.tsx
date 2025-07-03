@@ -15,19 +15,29 @@ interface Recipe {
 }
 
 function parseTimeInput(input: string): { minutes: number; seconds: number } {
-  const [minStr, secStr] = input.split(":");
-  const minutes = parseInt(minStr, 10);
-  const seconds = parseInt(secStr, 10);
-  if (
-    isNaN(minutes) ||
-    isNaN(seconds) ||
-    minutes < 0 ||
-    seconds < 0 ||
-    seconds > 59
-  ) {
-    throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
+  if (input.includes(":")) {
+    const [minStr, secStr] = input.split(":");
+    const minutes = parseInt(minStr, 10);
+    const seconds = parseInt(secStr, 10);
+    if (
+      isNaN(minutes) ||
+      isNaN(seconds) ||
+      minutes < 0 ||
+      seconds < 0 ||
+      seconds > 59
+    ) {
+      throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
+    }
+    return { minutes, seconds };
+  } else {
+    const totalSeconds = parseInt(input, 10);
+    if (isNaN(totalSeconds) || totalSeconds < 0) {
+      throw new Error("Invalid time format. Must be a non-negative number or mm:ss.");
+    }
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return { minutes, seconds };
   }
-  return { minutes, seconds };
 }
 
 function toTotalSeconds(minutes: number, seconds: number): number {
