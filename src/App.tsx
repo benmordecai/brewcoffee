@@ -188,7 +188,7 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         </div>
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Suggested Grounds (g)</label>
-        <input type="text" name="suggestedGrounds" value={formData.suggestedGrounds} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        <input type="number" inputMode="numeric" name="suggestedGrounds" value={formData.suggestedGrounds} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         </div>
         </div>
 
@@ -213,7 +213,7 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Pours</label>
-        <input type="text" name="pours" value={formData.pours} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        <input type="number" inputMode="numeric" name="pours" value={formData.pours} onChange={handleChange} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         </div>
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Time Between Pours</label>
