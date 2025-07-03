@@ -251,7 +251,7 @@ export const MainPage: React.FC<{
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Grounds</label>
         <div className="flex items-center justify-center">
             <button onClick={() => handleGroundsChange(String(Number(grounds) - 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="text" value={grounds} onChange={(e) => handleGroundsChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
+            <input type="number" inputMode="numeric" value={grounds} onChange={(e) => handleGroundsChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
             <button onClick={() => handleGroundsChange(String(Number(grounds) + 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
@@ -260,7 +260,7 @@ export const MainPage: React.FC<{
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Water</label>
         <div className="flex items-center justify-center">
             <button onClick={() => handleWaterChange(String(Number(water) - 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="text" value={water} onChange={(e) => handleWaterChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
+            <input type="number" inputMode="numeric" value={water} onChange={(e) => handleWaterChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
             <button onClick={() => handleWaterChange(String(Number(water) + 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
