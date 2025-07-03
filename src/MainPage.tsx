@@ -14,34 +14,60 @@ interface Recipe {
     comments: string;
 }
 
-export const TimeEditForm: React.FC<{ initialTime: number; onSave: (minutes: number, seconds: number) => void; onCancel: () => void }> = ({ initialTime, onSave, onCancel }) => {
-    const [minutes, setMinutes] = React.useState(Math.floor(initialTime / 60));
-    const [seconds, setSeconds] = React.useState(initialTime % 60);
+function parseTimeInput(input: string): { minutes: number; seconds: number } {
+  const [minStr, secStr] = input.split(":");
+  const minutes = parseInt(minStr, 10);
+  const seconds = parseInt(secStr, 10);
+  if (
+    isNaN(minutes) ||
+    isNaN(seconds) ||
+    minutes < 0 ||
+    seconds < 0 ||
+    seconds > 59
+  ) {
+    throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
+  }
+  return { minutes, seconds };
+}
+
+function toTotalSeconds(minutes: number, seconds: number): number {
+  return minutes * 60 + seconds;
+}
+
+const formatTime = (s: number) => {
+    const minutes = Math.floor(s / 60);
+    const seconds = s % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
+
+export const TimeEditForm: React.FC<{ initialTime: number; onSave: (totalSeconds: number) => void; onCancel: () => void }> = ({ initialTime, onSave, onCancel }) => {
+    const [timeString, setTimeString] = React.useState(formatTime(initialTime));
+    const [error, setError] = React.useState<string | null>(null);
 
     const handleSave = () => {
-        onSave(minutes, seconds);
+        try {
+            const { minutes, seconds } = parseTimeInput(timeString);
+            onSave(toTotalSeconds(minutes, seconds));
+            setError(null);
+        } catch (e: any) {
+            setError(e.message);
+        }
     };
 
-    const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let val = parseInt(e.target.value, 10) || 0;
-        if (val < 0) val = 0;
-        setMinutes(val);
-    }
-
-    const handleSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let val = parseInt(e.target.value, 10) || 0;
-        if (val < 0) val = 0;
-        if (val > 59) val = 59;
-        setSeconds(val);
-    }
-
     return (
-        <div className="flex items-center space-x-1">
-        <input type="number" value={minutes} onChange={handleMinutesChange} className="w-24 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-3xl font-mono font-bold focus:outline-none rounded-md p-2" />
-        <span className="text-3xl font-mono font-bold text-gray-800 dark:text-gray-200">:</span>
-        <input type="number" value={seconds} onChange={handleSecondsChange} className="w-24 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-3xl font-mono font-bold focus:outline-none rounded-md p-2" />
-        <button onClick={handleSave} className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md">Save</button>
-        <button onClick={onCancel} className="px-3 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md">Cancel</button>
+        <div className="flex flex-col items-center space-y-2">
+            <div className="flex items-center space-x-1">
+                <input
+                    type="text"
+                    value={timeString}
+                    onChange={(e) => setTimeString(e.target.value)}
+                    className="w-40 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-3xl font-mono font-bold focus:outline-none rounded-md p-2"
+                    placeholder="mm:ss"
+                />
+                <button onClick={handleSave} className="ml-2 px-3 py-2 bg-blue-600 text-white rounded-md">Save</button>
+                <button onClick={onCancel} className="px-3 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md">Cancel</button>
+            </div>
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
         </div>
     );
 };
@@ -95,6 +121,23 @@ export const MainPage: React.FC<{
     setIsBrewing,
 }) => {
     const recipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
+
+    React.useEffect(() => {
+        let interval: NodeJS.Timeout | undefined = undefined;
+        if (isTimerRunning && timer > 0) {
+            interval = setInterval(() => {
+                setTimer(t => t - 1);
+            }, 1000);
+        } else if (timer === 0) {
+            setIsTimerRunning(false);
+        }
+
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
+    }, [isTimerRunning, timer, setTimer, setIsTimerRunning]);
 
     const handleGroundsChange = (newGrounds: number) => {
         setGrounds(newGrounds);
@@ -150,17 +193,10 @@ export const MainPage: React.FC<{
         setIsEditingTime(false);
     };
 
-    const handleTimeEditSave = (newMinutes: number, newSeconds: number) => {
-        const newTotal = (newMinutes * 60) + newSeconds;
+    const handleTimeEditSave = (newTotal: number) => {
         setTotalSeconds(newTotal);
         setTimer(newTotal);
         setIsEditingTime(false);
-    };
-
-    const formatTime = (s: number) => {
-        const minutes = Math.floor(s / 60);
-        const seconds = s % 60;
-        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     };
 
     const waterPerPour = water / recipe.pours;
