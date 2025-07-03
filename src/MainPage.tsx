@@ -78,10 +78,10 @@ export const MainPage: React.FC<{
     tempUnit: string;
     selectedRecipeId: string;
     setSelectedRecipeId: React.Dispatch<React.SetStateAction<string>>;
-    grounds: number;
-    setGrounds: React.Dispatch<React.SetStateAction<number>>;
-    water: number;
-    setWater: React.Dispatch<React.SetStateAction<number>>;
+    grounds: string;
+    setGrounds: React.Dispatch<React.SetStateAction<string>>;
+    water: string;
+    setWater: React.Dispatch<React.SetStateAction<string>>;
     ratio: number;
     setRatio: React.Dispatch<React.SetStateAction<number>>;
     totalSeconds: number;
@@ -139,20 +139,33 @@ export const MainPage: React.FC<{
         };
     }, [isTimerRunning, timer, setTimer, setIsTimerRunning]);
 
-    const handleGroundsChange = (newGrounds: number) => {
-        setGrounds(newGrounds);
-        setWater(Math.round(newGrounds * ratio));
+    const handleGroundsChange = (newGrounds: string) => {
+        const num = parseFloat(newGrounds);
+        if (newGrounds === '' || (!isNaN(num) && num >= 0)) {
+            setGrounds(newGrounds);
+            if (newGrounds !== '' && !isNaN(num)) {
+                setWater(String(Math.round(num * ratio)));
+            }
+        }
     };
 
-    const handleWaterChange = (newWater: number) => {
-        setWater(newWater);
-        setGrounds(Number((newWater / ratio).toFixed(1)));
+    const handleWaterChange = (newWater: string) => {
+        const num = parseFloat(newWater);
+        if (newWater === '' || (!isNaN(num) && num >= 0)) {
+            setWater(newWater);
+            if (newWater !== '' && !isNaN(num)) {
+                setGrounds(String(Number((num / ratio).toFixed(1))));
+            }
+        }
     };
 
     const handleRatioChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newRatio = Number(e.target.value);
         setRatio(newRatio);
-        setWater(Math.round(grounds * newRatio));
+        const numGrounds = parseFloat(grounds);
+        if (!isNaN(numGrounds)) {
+            setWater(String(Math.round(numGrounds * newRatio)));
+        }
     };
 
     const handleStartStop = () => {
@@ -181,8 +194,8 @@ export const MainPage: React.FC<{
 
     const handleReset = () => {
         const currentRecipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
-        setGrounds(currentRecipe.suggestedGrounds);
-        setWater(currentRecipe.suggestedGrounds * currentRecipe.ratio);
+        setGrounds(String(currentRecipe.suggestedGrounds));
+        setWater(String(currentRecipe.suggestedGrounds * currentRecipe.ratio));
         setRatio(currentRecipe.ratio);
         const newTotalSeconds = currentRecipe.timeBetweenPours.minutes * 60 + currentRecipe.timeBetweenPours.seconds;
         setTotalSeconds(newTotalSeconds);
@@ -199,7 +212,7 @@ export const MainPage: React.FC<{
         setIsEditingTime(false);
     };
 
-    const waterPerPour = water / recipe.pours;
+    const waterPerPour = Number(water) / recipe.pours;
     const pourStart = (currentPour - 1) * waterPerPour;
     const pourEnd = currentPour * waterPerPour;
 
@@ -237,18 +250,18 @@ export const MainPage: React.FC<{
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Grounds</label>
         <div className="flex items-center justify-center">
-            <button onClick={() => handleGroundsChange(grounds - 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="number" value={grounds} onChange={(e) => handleGroundsChange(parseInt(e.target.value, 10) || 0)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
-            <button onClick={() => handleGroundsChange(grounds + 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
+            <button onClick={() => handleGroundsChange(String(Number(grounds) - 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
+            <input type="text" value={grounds} onChange={(e) => handleGroundsChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
+            <button onClick={() => handleGroundsChange(String(Number(grounds) + 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
         </div>
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Water</label>
         <div className="flex items-center justify-center">
-            <button onClick={() => handleWaterChange(water - 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
-            <input type="number" value={water} onChange={(e) => handleWaterChange(Number(e.target.value))} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
-            <button onClick={() => handleWaterChange(water + 1)} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
+            <button onClick={() => handleWaterChange(String(Number(water) - 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
+            <input type="text" value={water} onChange={(e) => handleWaterChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
+            <button onClick={() => handleWaterChange(String(Number(water) + 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
         </div>

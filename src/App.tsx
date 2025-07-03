@@ -368,8 +368,8 @@ function App() {
     // Lifted State
     const [selectedRecipeId, setSelectedRecipeId] = React.useState(recipes[0].id);
     const recipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
-    const [grounds, setGrounds] = React.useState(recipe.suggestedGrounds);
-    const [water, setWater] = React.useState(recipe.suggestedGrounds * recipe.ratio);
+    const [grounds, setGrounds] = React.useState(String(recipe.suggestedGrounds));
+    const [water, setWater] = React.useState(String(recipe.suggestedGrounds * recipe.ratio));
     const [ratio, setRatio] = React.useState(recipe.ratio);
     const [totalSeconds, setTotalSeconds] = React.useState(recipe.timeBetweenPours.minutes * 60 + recipe.timeBetweenPours.seconds);
     const [timer, setTimer] = React.useState(totalSeconds);
@@ -380,8 +380,8 @@ function App() {
 
     React.useEffect(() => {
         const newRecipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
-        setGrounds(newRecipe.suggestedGrounds);
-        setWater(newRecipe.suggestedGrounds * newRecipe.ratio);
+        setGrounds(String(newRecipe.suggestedGrounds));
+        setWater(String(newRecipe.suggestedGrounds * newRecipe.ratio));
         setRatio(newRecipe.ratio);
         const newTotalSeconds = newRecipe.timeBetweenPours.minutes * 60 + newRecipe.timeBetweenPours.seconds;
         setTotalSeconds(newTotalSeconds);
