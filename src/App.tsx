@@ -93,10 +93,7 @@ const RecipeForm: React.FC<{ recipe: RecipeFormData | null; onSave: (data: Recip
     
 
     const handleTimeChange = (part: keyof RecipeFormData['timeBetweenPours'], value: string) => {
-        let numValue = parseInt(value, 10) || 0;
-        if (numValue < 0) numValue = 0;
-        if (numValue > 59) numValue = 59;
-        handleNestedChange('timeBetweenPours', part, numValue);
+        handleNestedChange('timeBetweenPours', part, parseInt(value, 10) || 0);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
