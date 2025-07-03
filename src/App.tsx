@@ -401,7 +401,7 @@ function App() {
         let interval: number | null = null;
         if (isTimerRunning && timer > 0) {
             interval = window.setInterval(() => {
-                setTimer(t => t - 1);
+                setTimer(t => Math.max(0, t - 1));
             }, 1000);
         } else if (isTimerRunning && timer === 0) {
             console.log("Timer reached zero, attempting to trigger notification.");

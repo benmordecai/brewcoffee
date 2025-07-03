@@ -126,7 +126,7 @@ export const MainPage: React.FC<{
         let interval: NodeJS.Timeout | undefined = undefined;
         if (isTimerRunning && timer > 0) {
             interval = setInterval(() => {
-                setTimer(t => t - 1);
+                setTimer(t => Math.max(0, t - 1));
             }, 1000);
         } else if (timer === 0) {
             setIsTimerRunning(false);
