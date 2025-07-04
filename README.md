@@ -1,7 +1,9 @@
 # <img src="./resources/icon.png" alt="BrewCoffee icon" width="65" align="center"> BrewCoffee
 
-
 Make every cup of coffee consistently excellent. Caffeinate Responsibly.
+
+## Installation
+Download from the [releases](https://github.com/benmordecai/brewcoffee/releases) page. No official app store release yet, maybe in the future. 
 
 ## How It Works
 *	Load your recipe and determine enter either the amount of grounds you want to use or the amount of water (roughly equal to the final amount of coffee) and the calculator determines the missing value. 
