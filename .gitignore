@@ -112,6 +112,10 @@ dist-ssr
 .vite
 
 # Capacitor
-/android
 /ios
 /www
+
+# Android build outputs
+android/.gradle/
+android/app/build/
+android/build/

@@ -11,8 +11,9 @@ export const playNotificationSound = async (currentPour: number, totalPours: num
                     id: 1, // Unique ID for this notification
                     channelId: 'timer_completion',
                     sound: 'default',
-                    smallIcon: 'res://ic_notification',
                     
+                    
+                smallIcon: 'res://ic_stat_notification',
                 },
             ],
         });
