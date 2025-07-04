@@ -132,22 +132,7 @@ export const MainPage: React.FC<{
 }) => {
     const recipe = recipes.find((r: Recipe) => r.id === selectedRecipeId) || recipes[0];
 
-    React.useEffect(() => {
-        let interval: NodeJS.Timeout | undefined = undefined;
-        if (isTimerRunning && timer > 0) {
-            interval = setInterval(() => {
-                setTimer(t => Math.max(0, t - 1));
-            }, 1000);
-        } else if (timer === 0) {
-            setIsTimerRunning(false);
-        }
-
-        return () => {
-            if (interval) {
-                clearInterval(interval);
-            }
-        };
-    }, [isTimerRunning, timer, setTimer, setIsTimerRunning]);
+    
 
     const handleGroundsChange = (newGrounds: string) => {
         const num = parseFloat(newGrounds);
