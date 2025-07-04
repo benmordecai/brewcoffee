@@ -9,9 +9,9 @@ Download from the [releases](https://github.com/benmordecai/brewcoffee/releases)
 Visit https://benmordecai.github.io/brewcoffee/ from Safari and from the Share menu select "Add To Homescreen"
 
 ## How It Works
-*	Load your recipe and determine enter either the amount of grounds you want to use or the amount of water (roughly equal to the final amount of coffee) and the calculator determines the missing value. 
-*	Follow the instructions in the comments. (Steps 1)
-*	Use the timer and range calculator to time your pour. 
+*	Load your recipe and enter either the amount of grounds you want to use or the amount of water (roughly equal to the final amount of coffee) and the calculator determines the missing value. 
+*	Follow the instructions in the comments. 
+*	Use the timer and range calculator to guide your pours.
 
 ## Features
 
@@ -75,7 +75,7 @@ Visit https://benmordecai.github.io/brewcoffee/ from Safari and from the Share m
 <p align="center">
   <img src="./screenshots/demo11.jpg" width="300">
   <br>
-  <em>Step 11: The final product. Noticably better results than an automatic machine.</em>
+  <em>Step 11: The final product. Noticeably better results than an automatic machine.</em>
 </p>
 
 ## Screenshots
