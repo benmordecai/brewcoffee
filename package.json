@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node ./scripts/set-app-version.cjs && tsc -b && NODE_ENV=production vite build",
+    "build": "node ./scripts/set-app-version.cjs && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "VITE_APP_BASE_PATH=/brewcoffee/ npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.0",
