@@ -417,7 +417,7 @@ function App() {
             console.log("Timer reached zero, attempting to trigger notification.");
             setIsTimerRunning(false);
             (async () => {
-                await playNotificationSound();
+                await playNotificationSound(currentPour, recipe.pours);
             })();
         }
         return () => {
