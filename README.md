@@ -8,6 +8,18 @@ Download from the [releases](https://github.com/benmordecai/brewcoffee/releases)
 ## iPhone "Installation"
 Visit https://benmordecai.github.io/brewcoffee/ from Safari and from the Share menu select "Add To Homescreen"
 
+## Recipe Suggestions:
+Submit an issue with the following information:
+- Name: 
+- Description: 
+- Ratio: 
+- Suggested Grounds: 
+- Grind: 
+- Water Temperature: 
+- Pours: 
+- Time Between Pours: 
+- Comments: 
+
 ## How It Works
 *	Load your recipe and enter either the amount of grounds you want to use or the amount of water (roughly equal to the final amount of coffee) and the calculator determines the missing value. 
 *	Follow the instructions in the comments. 
