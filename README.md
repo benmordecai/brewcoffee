@@ -1,4 +1,5 @@
-# <img src="./resources/icon.png" alt="BrewCoffee icon" width="64" align="left"> BrewCoffee
+# <img src="./resources/icon.png" alt="BrewCoffee icon" width="65" align="center"> BrewCoffee
+
 
 Make every cup of coffee consistently excellent. Caffeinate Responsibly.
 
