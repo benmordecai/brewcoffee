@@ -360,7 +360,7 @@ const SettingsPage: React.FC<{
         <section>
         <h2 className="text-xl font-heading text-gray-800 dark:text-gray-200 mb-3">About</h2>
         <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-gray-500 dark:text-gray-400 space-y-2 shadow-sm">
-        <p><span className="font-semibold text-gray-700 dark:text-gray-300">BrewCoffee</span> v1.0.0</p>
+        <p><span className="font-semibold text-gray-700 dark:text-gray-300">BrewCoffee</span> v1.0.1</p>
         <p>Caffeinate Responsibly</p>
         <p><a href="https://github.com/benmordecai/brewcoffee" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">View on GitHub</a></p>
         </div>
