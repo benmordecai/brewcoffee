@@ -425,7 +425,7 @@ function App() {
                 clearInterval(interval);
             }
         };
-    }, [isTimerRunning]);
+    }, [isTimerRunning, timer, currentPour, recipe.pours]);
 
     if (!recipes || recipes.length === 0) {
         setRecipes(initialRecipes);

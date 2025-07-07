@@ -14,9 +14,9 @@ export const initialRecipes = [
     {
         id: 'default-2',
         name: 'French Press',
-        description: 'Hearty and silty brew for a long session. Perfect for sharing.',
+        description: 'Hearty and silty brew with robust body. Perfect for long drinking sessions.',
         ratio: 16,
-        suggestedGrounds: 60,
+        suggestedGrounds: 50,
         grind: 'Coarse',
         waterTemperature: { value: 210, unit: 'F' },
         pours: 1,

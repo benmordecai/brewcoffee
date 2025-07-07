@@ -214,8 +214,11 @@ export const MainPage: React.FC<{
     const getButtonText = () => {
         if (!isBrewing) return 'Start';
         if (isTimerRunning) return 'Pause';
-        if (timer === 0) {
-            return currentPour < recipe.pours ? 'Continue' : 'Finish';
+        if (timer === 0 && currentPour < recipe.pours) {
+            return 'Continue';
+        }
+        if (timer === 0 && currentPour >= recipe.pours) {
+            return 'Finish';
         }
         return 'Resume';
     };
