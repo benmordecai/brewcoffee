@@ -1,4 +1,5 @@
 import React from 'react';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { MainPage } from './MainPage';
 import { useLocalStorage } from './hooks';
 import { initialRecipes, grindOptions } from './data';
@@ -404,6 +405,11 @@ function App() {
     React.useEffect(() => {
         const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.classList.toggle('dark', isDark);
+
+        StatusBar.setStyle({
+            style: isDark ? Style.Dark : Style.Light
+        });
+
     }, [theme]);
 
     // Lifted Timer Logic
