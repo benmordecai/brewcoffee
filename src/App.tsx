@@ -308,7 +308,17 @@ function App() {
         initialRecipes,
         (stored) => Array.isArray(stored) && stored.length > 0,
     );
-    const [theme, setTheme] = useLocalStorage<string>('brewcoffee-theme', 'system');
+    const [theme, setThemeState] = useLocalStorage<string>('brewcoffee-theme', 'system');
+
+    // 'system' means "no override": drop the stored key so a fresh load falls
+    // back to the default, instead of teaching the generic hook about themes.
+    const setTheme: React.Dispatch<React.SetStateAction<string>> = (value) => {
+        setThemeState(value);
+        const resolved = value instanceof Function ? value(theme) : value;
+        if (resolved === 'system') {
+            window.localStorage.removeItem('brewcoffee-theme');
+        }
+    };
     const [tempUnit, setTempUnit] = useLocalStorage<string>('brewcoffee-temp-unit', 'F');
 
     // Lifted State
