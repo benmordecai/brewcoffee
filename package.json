@@ -1,6 +1,6 @@
 {
   "name": "brewcoffee",
-  "private": true,
+  "private": false,
   "version": "1.0.4",
   "type": "module",
   "scripts": {
