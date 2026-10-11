@@ -3,7 +3,8 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { MainPage } from './MainPage';
 import { useLocalStorage } from './hooks';
 import { initialRecipes, grindOptions } from './data';
-import { playNotificationSound } from './notifications';
+import { ensureNotificationChannel, notifyTimerComplete } from './notifications';
+import { remainingSeconds } from './utils';
 import { Icon } from './Icon';
 
 
@@ -412,26 +413,46 @@ function App() {
 
     }, [theme]);
 
-    // Lifted Timer Logic
+    // Timestamp-anchored timer. Remaining time is derived from a wall-clock
+    // anchor (Date.now) instead of decrementing once per second, so the countdown
+    // stays accurate when the OS throttles or suspends JS timers in the background.
+    const timerEndRef = React.useRef<number | null>(null);
+    const wasRunningRef = React.useRef(isTimerRunning);
+
+    // (Re)anchor the countdown to the wall clock on every start/resume transition.
     React.useEffect(() => {
-        let interval: number | null = null;
-        if (isTimerRunning && timer > 0) {
-            interval = window.setInterval(() => {
-                setTimer(t => Math.max(0, t - 1));
-            }, 1000);
-        } else if (isTimerRunning && timer === 0) {
-            console.log("Timer reached zero, attempting to trigger notification.");
-            setIsTimerRunning(false);
-            (async () => {
-                await playNotificationSound(currentPour, recipe.pours);
-            })();
+        if (isTimerRunning && !wasRunningRef.current) {
+            timerEndRef.current = Date.now() + timer * 1000;
         }
-        return () => {
-            if (interval) {
-                clearInterval(interval);
+        if (!isTimerRunning) {
+            timerEndRef.current = null;
+        }
+        wasRunningRef.current = isTimerRunning;
+    });
+
+    React.useEffect(() => {
+        const endTime = timerEndRef.current;
+        if (!isTimerRunning || endTime === null) {
+            return;
+        }
+        const interval = window.setInterval(() => {
+            const remaining = remainingSeconds(endTime);
+            setTimer(remaining);
+            if (remaining <= 0) {
+                timerEndRef.current = null;
+                setIsTimerRunning(false);
+                void notifyTimerComplete(currentPour, recipe.pours);
             }
+        }, 500);
+        return () => {
+            window.clearInterval(interval);
         };
-    }, [isTimerRunning, timer, currentPour, recipe.pours]);
+    }, [isTimerRunning, currentPour, recipe.pours]);
+
+    // Create the Android notification channel (and request permission) once at startup.
+    React.useEffect(() => {
+        void ensureNotificationChannel();
+    }, []);
 
     if (!recipes || recipes.length === 0) {
         setRecipes(initialRecipes);
