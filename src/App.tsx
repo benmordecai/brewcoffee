@@ -301,7 +301,13 @@ const SettingsPage: React.FC<{
 
 function App() {
     const [page, setPage] = React.useState<string>('main');
-    const [recipes, setRecipes] = useLocalStorage<Recipe[]>('brewcoffee-recipes', initialRecipes);
+    // The validator repairs a corrupted/empty stored value at init time, so no
+    // render-body setState is needed to guarantee a non-empty recipe list.
+    const [recipes, setRecipes] = useLocalStorage<Recipe[]>(
+        'brewcoffee-recipes',
+        initialRecipes,
+        (stored) => Array.isArray(stored) && stored.length > 0,
+    );
     const [theme, setTheme] = useLocalStorage<string>('brewcoffee-theme', 'system');
     const [tempUnit, setTempUnit] = useLocalStorage<string>('brewcoffee-temp-unit', 'F');
 
@@ -381,10 +387,6 @@ function App() {
     React.useEffect(() => {
         void ensureNotificationChannel();
     }, []);
-
-    if (!recipes || recipes.length === 0) {
-        setRecipes(initialRecipes);
-    }
 
     return (
         <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-body text-gray-800 dark:text-gray-200 transition-colors duration-300">

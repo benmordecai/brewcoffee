@@ -1,10 +1,15 @@
 import React from 'react';
 
-export const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
+export const useLocalStorage = <T,>(
+    key: string,
+    initialValue: T,
+    isValid: (value: T) => boolean = () => true,
+): [T, React.Dispatch<React.SetStateAction<T>>] => {
     const [storedValue, setStoredValue] = React.useState<T>(() => {
         try {
             const item = window.localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
+            const parsed = item ? (JSON.parse(item) as T) : initialValue;
+            return isValid(parsed) ? parsed : initialValue;
         } catch (error) {
             console.error(error);
             return initialValue;
