@@ -4,82 +4,10 @@ import { MainPage } from './MainPage';
 import { useLocalStorage } from './hooks';
 import { initialRecipes, grindOptions } from './data';
 import { ensureNotificationChannel, notifyTimerComplete } from './notifications';
-import { remainingSeconds } from './utils';
+import { formatTimeFromParts, parseTimeInput, remainingSeconds, validateNumeric } from './utils';
+import type { Recipe, RecipeFormData } from './types';
 import { Icon } from './Icon';
 
-
-interface RecipeFormData {
-    id: string;
-    name: string;
-    description: string;
-    ratio: string;
-    suggestedGrounds: string;
-    grind: string;
-    waterTemperature: { value: string; unit: string; };
-    pours: string;
-    timeBetweenPours: string; // mm:ss format
-    comments: string;
-}
-
-interface Recipe {
-    id: string;
-    name: string;
-    description: string;
-    ratio: number;
-    suggestedGrounds: number;
-    grind: string;
-    waterTemperature: { value: number; unit: string; };
-    pours: number;
-    timeBetweenPours: { minutes: number; seconds: number; };
-    comments: string;
-}
-
-function parseTimeInput(input: string): { minutes: number; seconds: number } {
-  if (input.includes(":")) {
-    const [minStr, secStr] = input.split(":");
-    const minutes = parseInt(minStr, 10);
-    const seconds = parseInt(secStr, 10);
-    if (
-      isNaN(minutes) ||
-      isNaN(seconds) ||
-      minutes < 0 ||
-      seconds < 0 ||
-      seconds > 59
-    ) {
-      throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
-    }
-    return { minutes, seconds };
-  } else {
-    const totalSeconds = parseInt(input, 10);
-    if (isNaN(totalSeconds) || totalSeconds < 0) {
-      throw new Error("Invalid time format. Must be a non-negative number or mm:ss.");
-    }
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return { minutes, seconds };
-  }
-}
-
-function validateNumeric(value: string, fieldName: string, options: { isInteger?: boolean, min?: number, max?: number } = {}): number {
-    const num = Number(value);
-    if (isNaN(num)) {
-        throw new Error(`${fieldName} must be a number.`);
-    }
-    if (options.isInteger && !Number.isInteger(num)) {
-        throw new Error(`${fieldName} must be a whole number.`);
-    }
-    if (options.min !== undefined && num < options.min) {
-        throw new Error(`${fieldName} must be at least ${options.min}.`);
-    }
-    if (options.max !== undefined && num > options.max) {
-        throw new Error(`${fieldName} must be no more than ${options.max}.`);
-    }
-    return num;
-}
-
-const formatTime = (minutes: number, seconds: number): string => {
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
 
 const Header: React.FC<{ page: string; setPage: React.Dispatch<React.SetStateAction<string>> }> = ({ page, setPage }) => {
     return (
@@ -117,7 +45,7 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
                 suggestedGrounds: String(recipe.suggestedGrounds),
                 pours: String(recipe.pours),
                 waterTemperature: { ...recipe.waterTemperature, value: String(recipe.waterTemperature.value) },
-                timeBetweenPours: formatTime(recipe.timeBetweenPours.minutes, recipe.timeBetweenPours.seconds),
+                timeBetweenPours: formatTimeFromParts(recipe.timeBetweenPours.minutes, recipe.timeBetweenPours.seconds),
             };
         }
         return {

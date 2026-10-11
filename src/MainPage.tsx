@@ -1,54 +1,7 @@
 import React from 'react';
 import { Icon } from './Icon';
-
-interface Recipe {
-    id: string;
-    name: string;
-    description: string;
-    ratio: number;
-    suggestedGrounds: number;
-    grind: string;
-    waterTemperature: { value: number; unit: string; };
-    pours: number;
-    timeBetweenPours: { minutes: number; seconds: number; };
-    comments: string;
-}
-
-function parseTimeInput(input: string): { minutes: number; seconds: number } {
-  if (input.includes(":")) {
-    const [minStr, secStr] = input.split(":");
-    const minutes = parseInt(minStr, 10);
-    const seconds = parseInt(secStr, 10);
-    if (
-      isNaN(minutes) ||
-      isNaN(seconds) ||
-      minutes < 0 ||
-      seconds < 0 ||
-      seconds > 59
-    ) {
-      throw new Error("Invalid time format. Use mm:ss with seconds 0-59.");
-    }
-    return { minutes, seconds };
-  } else {
-    const totalSeconds = parseInt(input, 10);
-    if (isNaN(totalSeconds) || totalSeconds < 0) {
-      throw new Error("Invalid time format. Must be a non-negative number or mm:ss.");
-    }
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return { minutes, seconds };
-  }
-}
-
-function toTotalSeconds(minutes: number, seconds: number): number {
-  return minutes * 60 + seconds;
-}
-
-const formatTime = (s: number) => {
-    const minutes = Math.floor(s / 60);
-    const seconds = s % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-};
+import type { Recipe } from './types';
+import { formatTime, parseTimeInput, toTotalSeconds } from './utils';
 
 export const TimeEditForm: React.FC<{ initialTime: number; onSave: (totalSeconds: number) => void; onCancel: () => void }> = ({ initialTime, onSave, onCancel }) => {
     const [timeString, setTimeString] = React.useState(formatTime(initialTime));
