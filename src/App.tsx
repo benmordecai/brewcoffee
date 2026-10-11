@@ -245,8 +245,8 @@ const SettingsPage: React.FC<{
             <div key={recipe.id} className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md flex items-center justify-between">
             <div className="flex items-center">
             <div className="flex flex-col mr-3 space-y-1">
-            <button onClick={() => moveRecipe(index, -1)} disabled={index === 0} className="disabled:opacity-30 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"><Icon name="chevronUp" className="w-5 h-5"/></button>
-            <button onClick={() => moveRecipe(index, 1)} disabled={index === recipes.length - 1} className="disabled:opacity-30 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"><Icon name="chevronDown" className="w-5 h-5"/></button>
+            <button onClick={() => moveRecipe(index, -1)} disabled={index === 0} aria-label={`Move ${recipe.name} up`} className="disabled:opacity-30 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"><Icon name="chevronUp" className="w-5 h-5"/></button>
+            <button onClick={() => moveRecipe(index, 1)} disabled={index === recipes.length - 1} aria-label={`Move ${recipe.name} down`} className="disabled:opacity-30 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"><Icon name="chevronDown" className="w-5 h-5"/></button>
             </div>
             <div>
             <p className="font-semibold text-gray-800 dark:text-gray-200">{recipe.name}</p>

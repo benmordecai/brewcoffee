@@ -201,18 +201,18 @@ export const MainPage: React.FC<{
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Grounds</label>
         <div className="flex items-center justify-center">
-            <button onClick={() => handleGroundsChange(String(Number(grounds) - 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
+            <button onClick={() => handleGroundsChange(String(Number(grounds) - 1))} aria-label="Decrease grounds" className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
             <input type="number" inputMode="numeric" value={grounds} onChange={(e) => handleGroundsChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
-            <button onClick={() => handleGroundsChange(String(Number(grounds) + 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
+            <button onClick={() => handleGroundsChange(String(Number(grounds) + 1))} aria-label="Increase grounds" className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
         </div>
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
         <label className="text-gray-500 dark:text-gray-400 text-sm font-medium">Water</label>
         <div className="flex items-center justify-center">
-            <button onClick={() => handleWaterChange(String(Number(water) - 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
+            <button onClick={() => handleWaterChange(String(Number(water) - 1))} aria-label="Decrease water" className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">-</button>
             <input type="number" inputMode="numeric" value={water} onChange={(e) => handleWaterChange(e.target.value)} className="w-full text-center bg-transparent text-gray-800 dark:text-gray-200 text-2xl font-bold focus:outline-none" />
-            <button onClick={() => handleWaterChange(String(Number(water) + 1))} className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
+            <button onClick={() => handleWaterChange(String(Number(water) + 1))} aria-label="Increase water" className="px-3 py-1 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-2xl font-bold">+</button>
         </div>
         <span className="text-gray-500 dark:text-gray-400">grams</span>
         </div>
@@ -245,7 +245,7 @@ export const MainPage: React.FC<{
             <>
             <h3 className="text-7xl font-mono font-bold text-gray-800 dark:text-gray-200 tracking-wider">{formatTime(timer)}</h3>
             {!isBrewing &&
-                <button onClick={() => setIsEditingTime(true)} className="ml-4 p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
+                <button onClick={() => setIsEditingTime(true)} aria-label="Edit time" className="ml-4 p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
                 <Icon name="edit" className="w-6 h-6" />
                 </button>
             }
