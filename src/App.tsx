@@ -68,7 +68,7 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleNestedChange = (parent: 'waterTemperature', child: 'value' | 'unit', value: string) => {
+    const handleNestedChange = (child: 'value' | 'unit', value: string) => {
         setFormData(prev => ({
             ...prev,
             waterTemperature: {
@@ -142,7 +142,7 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         <div>
         <label className="block text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Water Temp</label>
         <div className="flex">
-        <input type="text" value={formData.waterTemperature.value} onChange={(e) => handleNestedChange('waterTemperature', 'value', e.target.value)} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-l-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
+        <input type="text" value={formData.waterTemperature.value} onChange={(e) => handleNestedChange('value', e.target.value)} className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-l-md border border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-gray-800 dark:text-gray-200" />
         <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-sm">
         {formData.waterTemperature.unit}
         </span>
