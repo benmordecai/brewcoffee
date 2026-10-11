@@ -12,8 +12,8 @@ export const TimeEditForm: React.FC<{ initialTime: number; onSave: (totalSeconds
             const { minutes, seconds } = parseTimeInput(timeString);
             onSave(toTotalSeconds(minutes, seconds));
             setError(null);
-        } catch (e: any) {
-            setError(e.message);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
         }
     };
 

@@ -68,11 +68,11 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleNestedChange = (parent: keyof RecipeFormData, child: string, value: any) => {
+    const handleNestedChange = (parent: 'waterTemperature', child: 'value' | 'unit', value: string) => {
         setFormData(prev => ({
             ...prev,
-            [parent]: {
-                ...(prev[parent] as Record<string, any>),
+            waterTemperature: {
+                ...prev.waterTemperature,
                 [child]: value,
             },
         }));
@@ -97,8 +97,8 @@ const RecipeForm: React.FC<{ recipe: Recipe | null; onSave: (data: Recipe) => vo
                 timeBetweenPours: time,
             };
             onSave(numericData);
-        } catch (err: any) {
-            newErrors.form = err.message;
+        } catch (err) {
+            newErrors.form = err instanceof Error ? err.message : String(err);
             setErrors(newErrors);
         }
     };
