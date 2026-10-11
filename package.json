@@ -12,9 +12,11 @@
     "deploy": "VITE_APP_BASE_PATH=/brewcoffee/ npm run build && gh-pages -d dist"
   },
   "dependencies": {
-    "@capacitor/android": "^7.4.0",
-    "@capacitor/local-notifications": "^7.0.1",
-    "@capacitor/status-bar": "^7.0.1",
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/cli": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/local-notifications": "^7.0.7",
+    "@capacitor/status-bar": "^7.0.6",
     "@tailwindcss/vite": "^4.1.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
